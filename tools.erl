@@ -76,3 +76,14 @@ read_normal(FileName) ->
 read_bin(FileName) ->
     {ok, Context} = file:read_file(FileName),
     io:format("~p~n", [erlang:binary_to_term(Context)]).
+
+
+use_rsa(Msg) ->
+        PubEx  = 65537,
+        PrivEx = 7531712708607620783801185371644749935066152052780368689827275932079815492940396744378735701395659435842364793962992309884847527234216715366607660219930945,
+        Mod = 7919488123861148172698919999061127847747888703039837999377650217570191053151807772962118671509138346758471459464133273114654252861270845708312601272799123,
+        PrivKey = [crypto:mpint(PubEx), crypto:mpint(Mod), crypto:mpint(PrivEx)],
+        PubKey  = [crypto:mpint(PubEx), crypto:mpint(Mod)],
+        PKCS1 = crypto:rsa_public_encrypt(Msg, PubKey, rsa_pkcs1_padding),
+        crypto:rsa_private_decrypt(PKCS1, PrivKey, rsa_pkcs1_padding).
+
